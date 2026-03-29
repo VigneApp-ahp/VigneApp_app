@@ -21,21 +21,23 @@ interface Parcelle {
 }
 
 const CEPAGE_COLORS: Record<string, string> = {
-  "Pinot Noir": "#7c3aed",
-  Meunier: "#06b6d4",
-  Chardonnay: "#10b981",
+  "Pinot Noir": "#BA68C8",
+  "Pinot Meunier": "#06b6d4",
   "Pinot Gris": "#f59e0b",
-  Riesling: "#ef4444",
-  Gewurztraminer: "#ec4899",
+  "Pinot blanc": "#ef4444",
+  "Petit Meslier": "#ec4899",
+  "L’Arbanne": "#7FB14A",
+  Chardonnay: "#10b981",
 };
 
 const FALLBACK_COLORS = [
-  "#8b5cf6",
+  "#BA68C8",
   "#06b6d4",
-  "#10b981",
   "#f59e0b",
   "#ef4444",
   "#ec4899",
+  "#7FB14A",
+  "#10b981",
 ];
 
 const glassCard = {
@@ -131,7 +133,7 @@ export default function Dashboard() {
       <div className="pt-2">
         <h1 className="text-xl font-bold text-foreground">Dashboard</h1>
         <p className="text-muted-foreground text-sm">
-          Vue générale de l'exploitation
+          Détails de l'exploitation
         </p>
       </div>
 

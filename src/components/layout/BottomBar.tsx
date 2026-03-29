@@ -1,12 +1,12 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Map, Grape, Wallet, FileText } from "lucide-react";
+import { LayoutDashboard, Map, Grape, Euro, FileText } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 
 const navItems = [
-  { to: "/", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/parcelles", icon: Map, label: "Parcelles" },
   { to: "/vendanges", icon: Grape, label: "Vendanges" },
-  { to: "/finance", icon: Wallet, label: "Finance" },
+  { to: "/", icon: LayoutDashboard, label: "Dashboard" },
+  { to: "/finance", icon: Euro, label: "Finance" },
   { to: "/documents", icon: FileText, label: "Docs" },
 ];
 

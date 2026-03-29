@@ -1,4 +1,4 @@
-![Image locale](src/assets/README/banner_readme02.png)
+![Image locale](src/assets/README/banner_readme03.png)
 ***
 # VigneApp v1.0.0
 
