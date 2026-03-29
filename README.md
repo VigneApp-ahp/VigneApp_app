@@ -1,6 +1,8 @@
 ![Image locale](src/assets/README/banner_readme02.png)
+***
+# VigneApp v1.0.0
 
-# 🚀 React + Vite + Tailwind Template
+### 🚀 React + Vite + Tailwind Template
 
 Une template moderne prête à l’emploi pour démarrer rapidement un projet frontend avec **React**, **Vite** et **TailwindCSS**.
 
