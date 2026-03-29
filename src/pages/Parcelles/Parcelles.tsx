@@ -371,9 +371,9 @@ export default function Parcelles() {
             setEditingId(null);
           }}
           className="rounded-xl text-white"
-          style={{ background: "#e3c47d", color: "#000a18" }}
+          style={{ background: "#e3c47d", color: "#8c3348" }}
         >
-          <Plus size={16}/>
+          <Plus size={16} />
         </Button>
       </div>
 

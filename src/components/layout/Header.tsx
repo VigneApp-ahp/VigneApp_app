@@ -24,9 +24,14 @@ export default function Header() {
       </div>
 
       <span
-        className="logo-font absolute left-1/2 -translate-x-1/2 font-semibold text-sm tracking-wide"
-        // style={{ color: isDark ? "SOMBRE" : "CLAIRE" }} TITRE APP STYLE
-        style={{ color: isDark ? "#e3c47d" : "#000a18" }}
+        className="logo-font absolute left-1/2 -translate-x-1/2 font-semibold text-sm tracking-wide bg-clip-text text-transparent leading-[2.5] py-0.9"
+        style={{
+          width: "max-content", // <- permet au texte de s'étendre sans couper
+          padding: "0 25px", // <- ajoute un petit espace à gauche/droite
+          backgroundImage: isDark
+            ? "linear-gradient(135deg, #edd8ae, #d8b371)"
+            : "linear-gradient(135deg, #8c3348, #d48aa0)",
+        }}
       >
         VigneApp
       </span>

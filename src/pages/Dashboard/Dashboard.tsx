@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "@/config/firebase";
@@ -45,10 +46,12 @@ const glassCard = {
   backdropFilter: "blur(16px)",
   WebkitBackdropFilter: "blur(16px)",
   border: "1px solid rgba(255,255,255,0.3)",
+  
 };
 
 export default function Dashboard() {
   const [parcelles, setParcelles] = useState<Parcelle[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "parcelles"), (snap) => {
@@ -98,6 +101,7 @@ export default function Dashboard() {
       label: "Parcelles",
       value: totalParcelles,
       icon: MapPin,
+      route: "/parcelles",
       color: "text-violet-400",
       bg: "bg-violet-500/10",
       border: "border-violet-500/20",
@@ -106,6 +110,7 @@ export default function Dashboard() {
       label: "Total Ares",
       value: totalAres,
       icon: BarChart2,
+      route: "/parcelles",
       color: "text-cyan-400",
       bg: "bg-cyan-500/10",
       border: "border-cyan-500/20",
@@ -114,6 +119,7 @@ export default function Dashboard() {
       label: "Taux de perte",
       value: `${tauxPerte}%`,
       icon: Percent,
+      route: "/finance",
       color: "text-rose-400",
       bg: "bg-rose-500/10",
       border: "border-rose-500/20",
@@ -122,6 +128,7 @@ export default function Dashboard() {
       label: "Cépages",
       value: Object.keys(cepageMap).length,
       icon: Grape,
+      route: "/vendanges",
       color: "text-emerald-400",
       bg: "bg-emerald-500/10",
       border: "border-emerald-500/20",
@@ -138,10 +145,11 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        {stats.map(({ label, value, icon: Icon, color, bg, border }) => (
+        {stats.map(({ label, value, icon: Icon, color, bg, border, route }) => (
           <div
             key={label}
-            className={`rounded-2xl p-4 border ${border}`}
+            onClick={() => route && navigate(route)}
+            className={`rounded-2xl p-4 border ${border} cursor-pointer hover:scale-[1.02] transition`}
             style={glassCard}
           >
             <div
