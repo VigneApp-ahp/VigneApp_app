@@ -1,3 +1,5 @@
+![Image locale](src/assets/README/banner_readme.png)
+
 # 🚀 React + Vite + Tailwind Template
 
 Une template moderne prête à l’emploi pour démarrer rapidement un projet frontend avec **React**, **Vite** et **TailwindCSS**.
