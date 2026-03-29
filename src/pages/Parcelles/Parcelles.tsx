@@ -373,7 +373,7 @@ export default function Parcelles() {
           className="rounded-xl text-white"
           style={{ background: "#e3c47d", color: "#000a18" }}
         >
-          <Plus size={16} className="mr-1" /> Ajouter
+          <Plus size={16}/>
         </Button>
       </div>
 

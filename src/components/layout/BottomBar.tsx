@@ -18,7 +18,7 @@ export default function BottomBar() {
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between px-2 py-2 border-t border-white/20"
       style={{
-        background: "rgba(15, 15, 20, 0.25)",
+        background: "rgba(15, 15, 20, 0.10)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
       }}

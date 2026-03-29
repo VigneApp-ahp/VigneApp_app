@@ -6,7 +6,7 @@
 
 
 @layer base {
-:root {
+  :root {
     --background: 0 0% 98%;
     --foreground: 213 100% 9%;
     --card: 0 0% 100%;
@@ -56,14 +56,19 @@
   }
 
   body {
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: <weight>;
+    font-style: normal;
+
     background-color: transparent;
     color: hsl(var(--foreground));
   }
 }
 
 .logo-font {
-  font-family: "Caveat", cursive;
-  font-optical-sizing: auto;
+  font-size: x-large;
+  font-family: "Meddon", cursive;
   font-weight: 400;
   font-style: normal;
 }
