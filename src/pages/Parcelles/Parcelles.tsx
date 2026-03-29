@@ -27,7 +27,7 @@ interface Parcelle {
 }
 
 const glassCard = {
-  background: "rgba(255,255,255,0.15)",
+  background: "rgba(255,255,255,0.17)",
   backdropFilter: "blur(16px)",
   WebkitBackdropFilter: "blur(16px)",
   border: "1px solid rgba(255,255,255,0.3)",
@@ -217,10 +217,6 @@ function ParcelleCard({
   onDelete: () => void;
 }) {
   const [open, setOpen] = useState(false);
-  const pct =
-    parcelle.nombrePieds > 0
-      ? ((parcelle.piedsManquants / parcelle.nombrePieds) * 100).toFixed(1)
-      : "0.0";
 
   return (
     <div
@@ -242,14 +238,14 @@ function ParcelleCard({
               {parcelle.nom}
             </p>
             <div className="flex items-center gap-2 mt-0.5">
-              <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+              <Badge
+                variant="secondary"
+                className="text-[10px] px-2 py-0.5 rounded-full"
+              >
                 {parcelle.cepage}
               </Badge>
               <span className="text-[10px] text-muted-foreground">
                 {parcelle.nombreAres} ares
-              </span>
-              <span className="text-[10px] text-muted-foreground">
-                · {pct}% perte
               </span>
             </div>
           </div>
@@ -374,7 +370,8 @@ export default function Parcelles() {
             setShowAdd(true);
             setEditingId(null);
           }}
-          className="bg-violet-600 hover:bg-violet-700 text-white rounded-xl"
+          className="rounded-xl text-white"
+          style={{ background: "#e3c47d", color: "#000a18" }}
         >
           <Plus size={16} className="mr-1" /> Ajouter
         </Button>

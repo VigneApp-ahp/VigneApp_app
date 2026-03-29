@@ -129,7 +129,7 @@ export default function Dashboard() {
   return (
     <div className="p-4 space-y-4">
       <div className="pt-2">
-        <h1 className="text-xl font-bold text-foreground">Tableau de bord</h1>
+        <h1 className="text-xl font-bold text-foreground">Dashboard</h1>
         <p className="text-muted-foreground text-sm">
           Vue générale de l'exploitation
         </p>
