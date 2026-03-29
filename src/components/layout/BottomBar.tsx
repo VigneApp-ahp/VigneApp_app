@@ -12,9 +12,9 @@ const navItems = [
 export default function BottomBar() {
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between px-2 py-2 border-t border-white/10"
+      className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between px-2 py-2 border-t border-white/20"
       style={{
-        background: "rgba(15, 15, 20, 0.6)",
+        background: "rgba(15, 15, 20, 0.1)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
       }}
@@ -26,9 +26,7 @@ export default function BottomBar() {
           end={to === "/"}
           className={({ isActive }) =>
             `flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl transition-all duration-200 ${
-              isActive
-                ? "text-violet-400"
-                : "text-muted-foreground hover:text-foreground"
+              isActive ? "text-violet-300" : "text-white/60 hover:text-white"
             }`
           }
         >
