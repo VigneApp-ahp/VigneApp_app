@@ -1,4 +1,4 @@
-![Image locale](src/assets/README/banner_readme.png)
+![Image locale](src/assets/README/banner_readme02.png)
 
 # 🚀 React + Vite + Tailwind Template
 
