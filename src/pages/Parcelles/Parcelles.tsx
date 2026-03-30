@@ -9,10 +9,11 @@ import {
 } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { Plus, Pencil, Trash2, X, Check, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface Parcelle {
   id: string;
@@ -26,6 +27,8 @@ interface Parcelle {
   piedsManquants: number;
 }
 
+// ─── Styles ───────────────────────────────────────────────────────────────────
+
 const glassCard = {
   background: "rgba(255,255,255,0.17)",
   backdropFilter: "blur(16px)",
@@ -33,16 +36,63 @@ const glassCard = {
   border: "1px solid rgba(255,255,255,0.3)",
 };
 
-const defaultForm = {
-  nom: "",
-  cepage: "",
-  annee: new Date().getFullYear(),
-  refCadastre: "",
-  nombreAres: 0,
-  nombreRoutes: 0,
-  nombrePieds: 0,
-  piedsManquants: 0,
-};
+// ─── Boutons réutilisables ────────────────────────────────────────────────────
+
+function BtnPrimary({
+  onClick,
+  children,
+  className = "",
+}: {
+  onClick: () => void;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center justify-center gap-1 h-9 px-4 rounded-xl text-xs font-semibold transition-opacity hover:opacity-85 ${className}`}
+      style={{ background: "#e3c47d", color: "#000a18" }}
+    >
+      {children}
+    </button>
+  );
+}
+
+function BtnSecondary({
+  onClick,
+  children,
+  danger = false,
+  className = "",
+}: {
+  onClick: () => void;
+  children: React.ReactNode;
+  danger?: boolean;
+  className?: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center justify-center gap-1 h-9 px-4 rounded-xl text-xs font-semibold border transition-opacity hover:opacity-80 ${className}`}
+      style={
+        danger
+          ? {
+              color: "#ef4444",
+              borderColor: "rgba(239,68,68,0.35)",
+              background: "rgba(239,68,68,0.06)",
+            }
+          : {
+              color: "inherit",
+              borderColor: "rgba(128,128,128,0.3)",
+              background: "rgba(128,128,128,0.08)",
+            }
+      }
+    >
+      {children}
+    </button>
+  );
+}
+
+// ─── CircularLoss ─────────────────────────────────────────────────────────────
 
 function CircularLoss({
   total,
@@ -97,6 +147,19 @@ function CircularLoss({
     </div>
   );
 }
+
+// ─── Formulaire ───────────────────────────────────────────────────────────────
+
+const defaultForm = {
+  nom: "",
+  cepage: "",
+  annee: new Date().getFullYear(),
+  refCadastre: "",
+  nombreAres: 0,
+  nombreRoutes: 0,
+  nombrePieds: 0,
+  piedsManquants: 0,
+};
 
 function ParcelleForm({
   initial,
@@ -190,22 +253,20 @@ function ParcelleForm({
           />
         </div>
       </div>
+
       <div className="flex gap-2 pt-1">
-        <Button size="sm" className="flex-1" onClick={() => onSave(form)}>
-          <Check size={14} className="mr-1" /> Enregistrer
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          className="flex-1"
-          onClick={onCancel}
-        >
-          <X size={14} className="mr-1" /> Annuler
-        </Button>
+        <BtnPrimary onClick={() => onSave(form)} className="flex-1">
+          <Check size={14} /> Enregistrer
+        </BtnPrimary>
+        <BtnSecondary onClick={onCancel} className="flex-1">
+          <X size={14} /> Annuler
+        </BtnSecondary>
       </div>
     </div>
   );
 }
+
+// ─── Carte Parcelle ───────────────────────────────────────────────────────────
 
 function ParcelleCard({
   parcelle,
@@ -301,28 +362,20 @@ function ParcelleCard({
 
           {/* Actions */}
           <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              className="flex-1 h-8 text-xs rounded-xl"
-              onClick={onEdit}
-            >
-              <Pencil size={12} className="mr-1" /> Modifier
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              className="flex-1 h-8 text-xs rounded-xl text-rose-400 border-rose-500/30 hover:bg-rose-500/10"
-              onClick={onDelete}
-            >
-              <Trash2 size={12} className="mr-1" /> Supprimer
-            </Button>
+            <BtnSecondary onClick={onEdit} className="flex-1">
+              <Pencil size={12} /> Modifier
+            </BtnSecondary>
+            <BtnSecondary onClick={onDelete} danger className="flex-1">
+              <Trash2 size={12} /> Supprimer
+            </BtnSecondary>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+// ─── Page principale ──────────────────────────────────────────────────────────
 
 export default function Parcelles() {
   const [parcelles, setParcelles] = useState<Parcelle[]>([]);
@@ -364,17 +417,16 @@ export default function Parcelles() {
             {parcelles.length} parcelle(s)
           </p>
         </div>
-        <Button
-          size="sm"
+        <button
           onClick={() => {
             setShowAdd(true);
             setEditingId(null);
           }}
-          className="rounded-xl text-white"
-          style={{ background: "#e3c47d", color: "#8c3348" }}
+          className="w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-opacity hover:opacity-80"
+          style={{ background: "#e3c47d", color: "#000a18" }}
         >
-          <Plus size={16} />
-        </Button>
+          <Plus size={20} strokeWidth={2.5} />
+        </button>
       </div>
 
       {/* Formulaire ajout */}
@@ -397,7 +449,7 @@ export default function Parcelles() {
               Aucune parcelle enregistrée
             </p>
             <p className="text-muted-foreground text-xs">
-              Appuie sur "Ajouter" pour commencer
+              Appuie sur + pour commencer
             </p>
           </div>
         )}

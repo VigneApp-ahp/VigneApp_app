@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "@/config/firebase";
-import { MapPin, BarChart2, Percent, Grape } from "lucide-react";
+import { MapPin, BarChart2, Percent, Grape,  } from "lucide-react";
 import {
   PieChart,
   Pie,
