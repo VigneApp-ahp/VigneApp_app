@@ -13,6 +13,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 
+// IMPORT ICONES PARCELLES 
+import GrimpetteIcon from "../../assets/icons/grimpette.svg";
+import TerreSoudeIcon from "../../assets/icons/terre-soude.svg";
+import CrapaudiereIcon from "../../assets/icons/crapaudiere.svg";
+import LaGoisseIcon from "../../assets/icons/la-goisse.svg";
+import FontaineIcon from "../../assets/icons/fontaine.svg";
+import ForteEpineIcon from "../../assets/icons/forte-epine.svg";
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface Parcelle {
@@ -147,6 +155,27 @@ function CircularLoss({
     </div>
   );
 }
+// ─── Icones Parcelles ─────────────────────────────────────────────────────────
+const normalize = (str: string) =>
+  str
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
+const getParcelleIcon = (nom: string) => {
+  const n = normalize(nom);
+
+  if (n.includes("grimpette")) return GrimpetteIcon;
+  if (n.includes("terre")) return TerreSoudeIcon;
+  if (n.includes("crapaudiere")) return CrapaudiereIcon;
+  if (n.includes("goisse")) return LaGoisseIcon;
+  if (n.includes("fontaine")) return FontaineIcon;
+  if (n.includes("forte")) return ForteEpineIcon;
+
+  return GrimpetteIcon;
+};
+
+
 
 // ─── Formulaire ───────────────────────────────────────────────────────────────
 
@@ -311,10 +340,23 @@ function ParcelleCard({
             </div>
           </div>
         </div>
-        <ChevronDown
-          size={16}
-          className={`text-muted-foreground transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-        />
+        <div className="flex items-center gap-2">
+          {/* 👉 ICÔNE PARCELLE */}
+          <img
+            src={getParcelleIcon(parcelle.nom)}
+            alt="icon"
+            style={{
+              width: 80,
+              height: 80,
+              opacity: 0.3, // 👈 discret
+            }}
+          />
+
+          <ChevronDown
+            size={16}
+            className={`text-muted-foreground transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+          />
+        </div>
       </button>
 
       {/* Contenu dépliable */}
