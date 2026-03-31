@@ -12,18 +12,18 @@ import {
 import { db } from "@/config/firebase";
 import {
   Plus,
-  Pencil,
+  // Pencil,
   Trash2,
   X,
   Check,
-  FileText,
+  // FileText,
   Upload,
   ChevronDown,
   Receipt,
   ExternalLink,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+// import { Label } from "@/components/ui/label";
 
 // ─── Cloudinary ───────────────────────────────────────────────────────────────
 
@@ -77,7 +77,7 @@ const glassCardDark = {
 };
 
 const glassCardLight = {
-  background: "rgba(255,255,255,0.40)",
+  background: "rgba(255,255,255,0.10)",
   backdropFilter: "blur(16px)",
   WebkitBackdropFilter: "blur(16px)",
   border: "1px solid rgba(0,0,0,0.10)",
@@ -85,7 +85,7 @@ const glassCardLight = {
 };
 
 const glassModal = {
-  background: "rgba(20,18,30,0.97)",
+  background: "rgba(20,18,30,0.10)",
   backdropFilter: "blur(24px)",
   WebkitBackdropFilter: "blur(24px)",
   border: "1px solid rgba(255,255,255,0.15)",
@@ -110,65 +110,6 @@ function useDarkMode() {
   return dark;
 }
 
-// ─── Boutons ──────────────────────────────────────────────────────────────────
-
-function BtnPrimary({
-  onClick,
-  children,
-  className = "",
-  disabled = false,
-}: {
-  onClick: () => void;
-  children: React.ReactNode;
-  className?: string;
-  disabled?: boolean;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className={`flex items-center justify-center gap-1 h-9 px-4 rounded-xl text-xs font-semibold transition-opacity hover:opacity-85 disabled:opacity-40 ${className}`}
-      style={{ background: "#e3c47d", color: "#000a18" }}
-    >
-      {children}
-    </button>
-  );
-}
-
-function BtnSecondary({
-  onClick,
-  children,
-  danger = false,
-  className = "",
-}: {
-  onClick: () => void;
-  children: React.ReactNode;
-  danger?: boolean;
-  className?: string;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex items-center justify-center gap-1 h-9 px-4 rounded-xl text-xs font-semibold border transition-opacity hover:opacity-80 ${className}`}
-      style={
-        danger
-          ? {
-              color: "#ef4444",
-              borderColor: "rgba(239,68,68,0.35)",
-              background: "rgba(239,68,68,0.06)",
-            }
-          : {
-              color: "inherit",
-              borderColor: "rgba(128,128,128,0.3)",
-              background: "rgba(128,128,128,0.08)",
-            }
-      }
-    >
-      {children}
-    </button>
-  );
-}
-
 // ─── Tableau Données Bancaires ────────────────────────────────────────────────
 
 const MEMBRES = ["bryan", "william", "jordan"];
@@ -178,23 +119,12 @@ const PRENOMS: Record<string, string> = {
   jordan: "Jordan",
 };
 
-function TableauBancaire({ dark }: { dark: boolean }) {
+function CartesBancaires({ dark }: { dark: boolean }) {
   const cardStyle = dark ? glassCardDark : glassCardLight;
   const [donnees, setDonnees] = useState<Record<string, DonneeBancaire>>({});
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState({
-    numeroCompte: "",
-    bic: "",
-    iban: "",
-    ribUrl: "",
-  });
-  const [uploading, setUploading] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  const mutedColor = dark ? "rgba(255,255,255,0.45)" : "rgba(0,10,24,0.45)";
-  const textColor = dark ? "rgba(255,255,255,0.9)" : "#000a18";
-  const borderColor = dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.07)";
-
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const darkText = dark ? "#e3c47d" : "#000a18";
+  const ribColor = dark ? "rgba(227,196,125,0.6)" : "rgba(0,10,24,0.5)";
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "bancaire"), (snap) => {
       const map: Record<string, DonneeBancaire> = {};
@@ -206,244 +136,211 @@ function TableauBancaire({ dark }: { dark: boolean }) {
     return () => unsub();
   }, []);
 
-  const startEdit = (id: string) => {
-    const d = donnees[id];
-    setForm({
-      numeroCompte: d?.numeroCompte || "",
-      bic: d?.bic || "",
-      iban: d?.iban || "",
-      ribUrl: d?.ribUrl || "",
-    });
-    setEditingId(id);
+  return (
+    <div className="space-y-3">
+      {MEMBRES.map((id) => (
+        <button
+          key={id}
+          onClick={() => setSelectedId(id)}
+          className="w-full p-4 rounded-2xl text-left transition hover:opacity-85"
+          style={{
+            ...cardStyle,
+            border: dark
+              ? "1px solid rgba(255,255,255,0.15)"
+              : "1px solid rgba(0,0,0,0.08)",
+            background: dark
+              ? "rgba(255,255,255,0.08)"
+              : "rgba(255,255,255,0.20)",
+          }}
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold" style={{ color: darkText }}>
+              {PRENOMS[id]}
+            </span>
+
+            <span className="text-xs font-medium" style={{ color: ribColor }}>
+              RIB
+            </span>
+          </div>
+        </button>
+      ))}
+
+      {selectedId && (
+        <RibModal
+          id={selectedId}
+          data={donnees[selectedId]}
+          onClose={() => setSelectedId(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+function RibModal({
+  id,
+  data,
+  onClose,
+}: {
+  id: string;
+  data?: DonneeBancaire;
+  onClose: () => void;
+}) {
+  const [form, setForm] = useState({
+    prenom: data?.prenom || PRENOMS[id],
+    numeroCompte: data?.numeroCompte || "",
+    bic: data?.bic || "",
+    iban: data?.iban || "",
+    ribUrl: data?.ribUrl || "",
+  });
+
+  const dark = document.documentElement.classList.contains("dark");
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const textColor = dark ? "#f0ece0" : "#000a18";
+  const copyToClipboard = async (text: string) => {
+    if (!text) return;
+    await navigator.clipboard.writeText(text);
+    alert("Copié !");
   };
 
   const handleSave = async () => {
-    if (!editingId) return;
-    await setDoc(doc(db, "bancaire", editingId), {
-      prenom: PRENOMS[editingId],
-      ...form,
-    });
-    setEditingId(null);
+    await setDoc(doc(db, "bancaire", id), form);
+    onClose();
   };
 
-  const handleRibUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     setUploading(true);
     try {
       const url = await uploadToCloudinary(file);
-      setForm((prev) => ({ ...prev, ribUrl: url }));
-    } catch {
-      alert("Erreur lors de l'upload du RIB");
+      setForm((p) => ({ ...p, ribUrl: url }));
     } finally {
       setUploading(false);
     }
   };
 
+  function Field({
+    label,
+    value,
+    onChange,
+  }: {
+    label: string;
+    value: string;
+    onChange: (v: string) => void;
+  }) {
+    return (
+      <div className="flex flex-col gap-1">
+        <span className="text-xs opacity-70">{label}</span>
+
+        <div className="flex items-center gap-2">
+          <Input
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className="h-10"
+          />
+
+          <button
+            onClick={() => copyToClipboard(value)}
+            className="px-2 h-10 rounded-lg border text-xs hover:opacity-80"
+          >
+            Copier
+          </button>
+        </div>
+      </div>
+    );
+  }
   return (
-    <div className="rounded-2xl overflow-hidden" style={cardStyle}>
-      {/* Header */}
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center p-4 pb-24"
+      style={{ background: "rgba(0,0,0,0.7)" }}
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div
-        className="px-4 py-3 flex items-center gap-2"
-        style={{ borderBottom: `1px solid ${borderColor}` }}
+        className="w-full max-w-md rounded-2xl p-5 space-y-5"
+        style={
+          dark
+            ? glassModal
+            : {
+                background: "rgba(255,255,255,0.85)",
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+                border: "1px solid rgba(0,0,0,0.08)",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+              }
+        }
       >
-        <FileText size={15} style={{ color: "#e3c47d" }} />
-        <h2 className="font-semibold text-sm" style={{ color: textColor }}>
-          Données bancaires
-        </h2>
+        <div className="flex justify-between items-center">
+          <h2 className="text-base font-semibold" style={{ color: textColor }}>
+            {PRENOMS[id]} RIB
+          </h2>
+          <button onClick={onClose}>
+            <X size={16} />
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          <Field
+            label="Prénom / Nom"
+            value={form.prenom}
+            onChange={(v) => setForm((p) => ({ ...p, prenom: v }))}
+          />
+
+          <Field
+            label="N° de compte"
+            value={form.numeroCompte}
+            onChange={(v) => setForm((p) => ({ ...p, numeroCompte: v }))}
+          />
+
+          <Field
+            label="BIC"
+            value={form.bic}
+            onChange={(v) => setForm((p) => ({ ...p, bic: v }))}
+          />
+
+          <Field
+            label="IBAN"
+            value={form.iban}
+            onChange={(v) => setForm((p) => ({ ...p, iban: v }))}
+          />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <input
+            ref={fileRef}
+            type="file"
+            className="hidden"
+            onChange={handleUpload}
+          />
+
+          <button
+            onClick={() => fileRef.current?.click()}
+            className="text-xs px-3 py-2 rounded-lg border"
+          >
+            {uploading ? "Upload..." : "Importer RIB"}
+          </button>
+
+          {form.ribUrl && (
+            <a href={form.ribUrl} target="_blank">
+              Voir
+            </a>
+          )}
+        </div>
+
+        <div className="flex gap-2">
+          <button
+            onClick={handleSave}
+            className="flex-1 bg-[#e3c47d] text-black rounded-xl h-9"
+          >
+            Enregistrer
+          </button>
+
+          <button onClick={onClose} className="flex-1 border rounded-xl h-9">
+            Annuler
+          </button>
+        </div>
       </div>
-
-      {/* Table header */}
-      <div
-        className="grid gap-0 text-[10px] font-semibold uppercase tracking-wide px-4 py-2"
-        style={{
-          gridTemplateColumns: "1fr 1.4fr 1fr 2fr 52px",
-          color: mutedColor,
-          borderBottom: `1px solid ${borderColor}`,
-        }}
-      >
-        <span>Prénom</span>
-        <span>N° Compte</span>
-        <span>BIC</span>
-        <span>IBAN</span>
-        <span className="text-center">RIB</span>
-      </div>
-
-      {/* Lignes */}
-      {MEMBRES.map((id, i) => {
-        const d = donnees[id];
-        const isEditing = editingId === id;
-        const isLast = i === MEMBRES.length - 1;
-
-        return (
-          <div key={id}>
-            {isEditing ? (
-              /* ── Ligne édition ── */
-              <div
-                className="px-4 py-3 space-y-3"
-                style={{
-                  borderBottom: isLast ? "none" : `1px solid ${borderColor}`,
-                  background: dark
-                    ? "rgba(227,196,125,0.05)"
-                    : "rgba(227,196,125,0.06)",
-                }}
-              >
-                <p
-                  className="text-xs font-semibold"
-                  style={{ color: "#e3c47d" }}
-                >
-                  {PRENOMS[id]}
-                </p>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="space-y-1">
-                    <Label className="text-[10px]">N° Compte</Label>
-                    <Input
-                      value={form.numeroCompte}
-                      onChange={(e) =>
-                        setForm((p) => ({ ...p, numeroCompte: e.target.value }))
-                      }
-                      className="h-7 text-xs"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <Label className="text-[10px]">BIC</Label>
-                    <Input
-                      value={form.bic}
-                      onChange={(e) =>
-                        setForm((p) => ({ ...p, bic: e.target.value }))
-                      }
-                      className="h-7 text-xs"
-                    />
-                  </div>
-                  <div className="col-span-2 space-y-1">
-                    <Label className="text-[10px]">IBAN</Label>
-                    <Input
-                      value={form.iban}
-                      onChange={(e) =>
-                        setForm((p) => ({ ...p, iban: e.target.value }))
-                      }
-                      className="h-7 text-xs"
-                    />
-                  </div>
-                </div>
-
-                {/* Upload RIB */}
-                <div className="flex items-center gap-2">
-                  <input
-                    ref={fileRef}
-                    type="file"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    className="hidden"
-                    onChange={handleRibUpload}
-                  />
-                  <button
-                    onClick={() => fileRef.current?.click()}
-                    disabled={uploading}
-                    className="flex items-center gap-1 h-7 px-3 rounded-lg text-[10px] font-medium border transition-opacity hover:opacity-80 disabled:opacity-40"
-                    style={{
-                      borderColor: "rgba(227,196,125,0.4)",
-                      color: dark ? "#e3c47d" : "#7a5c10",
-                      background: "rgba(227,196,125,0.08)",
-                    }}
-                  >
-                    <Upload size={10} />
-                    {uploading ? "Upload..." : "Importer RIB"}
-                  </button>
-                  {form.ribUrl && (
-                    <a
-                      href={form.ribUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-[10px] flex items-center gap-1"
-                      style={{ color: "#e3c47d" }}
-                    >
-                      <ExternalLink size={10} /> Voir le RIB
-                    </a>
-                  )}
-                </div>
-
-                <div className="flex gap-2">
-                  <BtnPrimary onClick={handleSave} className="flex-1">
-                    <Check size={12} /> Enregistrer
-                  </BtnPrimary>
-                  <BtnSecondary
-                    onClick={() => setEditingId(null)}
-                    className="flex-1"
-                  >
-                    <X size={12} /> Annuler
-                  </BtnSecondary>
-                </div>
-              </div>
-            ) : (
-              /* ── Ligne affichage ── */
-              <div
-                className="grid items-center px-4 py-3 group"
-                style={{
-                  gridTemplateColumns: "1fr 1.4fr 1fr 2fr 52px",
-                  borderBottom: isLast ? "none" : `1px solid ${borderColor}`,
-                }}
-              >
-                <span
-                  className="text-xs font-semibold"
-                  style={{ color: textColor }}
-                >
-                  {PRENOMS[id]}
-                </span>
-                <span
-                  className="text-xs font-mono"
-                  style={{ color: mutedColor }}
-                >
-                  {d?.numeroCompte || "—"}
-                </span>
-                <span
-                  className="text-xs font-mono"
-                  style={{ color: mutedColor }}
-                >
-                  {d?.bic || "—"}
-                </span>
-                <span
-                  className="text-[10px] font-mono truncate pr-2"
-                  style={{ color: mutedColor }}
-                >
-                  {d?.iban || "—"}
-                </span>
-                <div className="flex items-center justify-center gap-1">
-                  {d?.ribUrl ? (
-                    <a
-                      href={d.ribUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      title="Ouvrir le RIB"
-                      className="w-7 h-7 rounded-lg flex items-center justify-center transition-opacity hover:opacity-70"
-                      style={{
-                        background: "rgba(227,196,125,0.15)",
-                        color: dark ? "#e3c47d" : "#7a5c10",
-                      }}
-                    >
-                      <FileText size={13} />
-                    </a>
-                  ) : (
-                    <span
-                      className="text-[10px]"
-                      style={{ color: "rgba(128,128,128,0.4)" }}
-                    >
-                      —
-                    </span>
-                  )}
-                  <button
-                    onClick={() => startEdit(id)}
-                    title="Modifier"
-                    className="w-6 h-6 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                    style={{ color: mutedColor }}
-                  >
-                    <Pencil size={11} />
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        );
-      })}
     </div>
   );
 }
@@ -1003,8 +900,8 @@ export default function Finance() {
         </div>
       </div>
 
-      {/* Tableau bancaire */}
-      <TableauBancaire dark={dark} />
+      {/* Cartes bancaire */}
+      <CartesBancaires dark={dark} />
 
       {/* Séparateur */}
       <div
