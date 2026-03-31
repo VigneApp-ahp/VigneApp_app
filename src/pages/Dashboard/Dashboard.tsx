@@ -135,86 +135,85 @@ export default function Dashboard() {
     },
   ];
 
-  return (
-    <div className="p-4 space-y-4">
-      <div className="pt-2">
-        <h1 className="text-xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground text-sm">
-          Détails de l'exploitation
-        </p>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        {stats.map(({ label, value, icon: Icon, color, bg, border, route }) => (
-          <div
-            key={label}
-            onClick={() => route && navigate(route)}
-            className={`rounded-2xl p-4 border ${border} cursor-pointer hover:scale-[1.02] transition`}
-            style={glassCard}
-          >
-            <div
-              className={`w-9 h-9 rounded-xl ${bg} flex items-center justify-center mb-3`}
-            >
-              <Icon size={18} className={color} />
-            </div>
-            <p className="text-2xl font-bold text-foreground">{value}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="rounded-2xl p-4 border border-white/10" style={glassCard}>
-        <h2 className="text-sm font-semibold text-foreground mb-1">
-          Répartition des cépages
-        </h2>
-        <p className="text-xs text-muted-foreground mb-4">
-          Par surface en ares
-        </p>
-
-        {cepageData.length > 0 ? (
-          <ResponsiveContainer width="100%" height={220}>
-            <PieChart>
-              <Pie
-                data={cepageData}
-                cx="50%"
-                cy="50%"
-                innerRadius={55}
-                outerRadius={85}
-                paddingAngle={4}
-                dataKey="value"
-              >
-                {cepageData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={getCepageColor(entry.name, index)}
-                  />
-                ))}
-              </Pie>
-              <Tooltip
-                contentStyle={{
-                  background: "rgba(15,15,25,0.9)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  borderRadius: "12px",
-                  color: "#fff",
-                  fontSize: "12px",
-                }}
-                formatter={(value) => [`${value} ares`, ""]}
-              />
-              <Legend
-                iconType="circle"
-                iconSize={8}
-                wrapperStyle={{ fontSize: "11px", color: "#9ca3af" }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        ) : (
-          <div className="h-[220px] flex items-center justify-center">
-            <p className="text-muted-foreground text-sm">
-              Aucune parcelle enregistrée
-            </p>
-          </div>
-        )}
-      </div>
+return (
+  <div className="h-[calc(100vh-90px)] overflow-hidden p-3 flex flex-col gap-3">
+    <div className="pt-1">
+      <h1 className="text-xl font-bold text-foreground">Dashboard</h1>
+      {/* <p className="text-muted-foreground text-sm">Détails de l'exploitation</p> */}
     </div>
-  );
+
+    <div className="grid grid-cols-2 gap-2">
+      {stats.map(({ label, value, icon: Icon, color, bg, border, route }) => (
+        <div
+          key={label}
+          onClick={() => route && navigate(route)}
+          className={`rounded-2xl p-3 border ${border} cursor-pointer hover:scale-[1.02] transition`}
+          style={glassCard}
+        >
+          <div
+            className={`w-8 h-8 rounded-xl ${bg} flex items-center justify-center mb-3`}
+          >
+            <Icon size={18} className={color} />
+          </div>
+          <p className="text-xl font-bold text-foreground">{value}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
+        </div>
+      ))}
+    </div>
+
+    <div
+      className="flex-1 min-h-0 rounded-2xl p-3 border border-white/10"
+      style={glassCard}
+    >
+      <h2 className="text-sm font-semibold text-foreground mb-1">
+        Répartition des cépages
+      </h2>
+      <p className="text-xs text-muted-foreground mb-4">Par surface en ares</p>
+
+      {cepageData.length > 0 ? (
+        <ResponsiveContainer width="100%" height={160}>
+          <PieChart>
+            <Pie
+              data={cepageData}
+              cx="50%"
+              cy="50%"
+              innerRadius={45}
+              outerRadius={65}
+              paddingAngle={4}
+              dataKey="value"
+            >
+              {cepageData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={getCepageColor(entry.name, index)}
+                />
+              ))}
+            </Pie>
+            <Tooltip
+              contentStyle={{
+                background: "rgba(15,15,25,0.9)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: "12px",
+                color: "#fff",
+                fontSize: "12px",
+              }}
+              formatter={(value) => [`${value} ares`, ""]}
+            />
+            <Legend
+              iconType="circle"
+              iconSize={8}
+              wrapperStyle={{ fontSize: "11px", color: "#9ca3af" }}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      ) : (
+        <div className="h-[140px] flex items-center justify-center">
+          <p className="text-muted-foreground text-sm">
+            Aucune parcelle enregistrée
+          </p>
+        </div>
+      )}
+    </div>
+  </div>
+);
 }

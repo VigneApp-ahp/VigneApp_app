@@ -1,6 +1,6 @@
 ![Image locale](src/assets/README/banner_readme03.png)
 ***
-# VigneApp v1.0.2
+# VigneApp v1.0.4
 
 
 ### 🚀 React + Vite + Tailwind Template

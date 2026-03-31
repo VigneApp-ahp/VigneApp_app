@@ -23,7 +23,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
+import { createPortal } from "react-dom";
 
 // ─── Cloudinary ───────────────────────────────────────────────────────────────
 
@@ -121,50 +121,70 @@ const PRENOMS: Record<string, string> = {
 
 function CartesBancaires({ dark }: { dark: boolean }) {
   const cardStyle = dark ? glassCardDark : glassCardLight;
+
   const [donnees, setDonnees] = useState<Record<string, DonneeBancaire>>({});
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
   const darkText = dark ? "#e3c47d" : "#000a18";
   const ribColor = dark ? "rgba(227,196,125,0.6)" : "rgba(0,10,24,0.5)";
+
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "bancaire"), (snap) => {
       const map: Record<string, DonneeBancaire> = {};
+
       snap.docs.forEach((d) => {
         map[d.id] = { id: d.id, ...d.data() } as DonneeBancaire;
       });
+
       setDonnees(map);
     });
+
     return () => unsub();
   }, []);
 
   return (
-    <div className="space-y-3">
-      {MEMBRES.map((id) => (
-        <button
-          key={id}
-          onClick={() => setSelectedId(id)}
-          className="w-full p-4 rounded-2xl text-left transition hover:opacity-85"
-          style={{
-            ...cardStyle,
-            border: dark
-              ? "1px solid rgba(255,255,255,0.15)"
-              : "1px solid rgba(0,0,0,0.08)",
-            background: dark
-              ? "rgba(255,255,255,0.08)"
-              : "rgba(255,255,255,0.20)",
-          }}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold" style={{ color: darkText }}>
-              {PRENOMS[id]}
-            </span>
+    <>
+      {/* Liste des cartes */}
+      <div className="space-y-3">
+        {MEMBRES.map((id) => {
+          const data = donnees[id];
 
-            <span className="text-xs font-medium" style={{ color: ribColor }}>
-              RIB
-            </span>
-          </div>
-        </button>
-      ))}
+          return (
+            <button
+              key={id}
+              onClick={() => setSelectedId(id)}
+              className="w-full p-4 rounded-2xl text-left transition hover:opacity-85"
+              style={{
+                ...cardStyle,
+                border: dark
+                  ? "1px solid rgba(255,255,255,0.15)"
+                  : "1px solid rgba(0,0,0,0.08)",
+                background: dark
+                  ? "rgba(255,255,255,0.08)"
+                  : "rgba(255,255,255,0.20)",
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <span
+                  className="text-sm font-semibold"
+                  style={{ color: darkText }}
+                >
+                  {PRENOMS[id]}
+                </span>
 
+                <span
+                  className="text-xs font-medium"
+                  style={{ color: ribColor }}
+                >
+                  {data ? "RIB" : "RIB"}
+                </span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Modal */}
       {selectedId && (
         <RibModal
           id={selectedId}
@@ -172,7 +192,7 @@ function CartesBancaires({ dark }: { dark: boolean }) {
           onClose={() => setSelectedId(null)}
         />
       )}
-    </div>
+    </>
   );
 }
 
@@ -197,6 +217,7 @@ function RibModal({
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const textColor = dark ? "#f0ece0" : "#000a18";
+
   const copyToClipboard = async (text: string) => {
     if (!text) return;
     await navigator.clipboard.writeText(text);
@@ -251,10 +272,14 @@ function RibModal({
       </div>
     );
   }
-  return (
+
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center p-4 pb-24"
-      style={{ background: "rgba(0,0,0,0.7)" }}
+      className="fixed inset-0 z-[9999] flex items-end justify-center px-4 pb-24"
+      style={{
+        background: "rgba(0,0,0,0.5)",
+        backdropFilter: "blur(6px)",
+      }}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div
@@ -341,7 +366,8 @@ function RibModal({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -623,7 +649,7 @@ function SectionCompta({ dark }: { dark: boolean }) {
       {/* Header section */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Receipt size={15} style={{ color: "#e3c47d" }} />
+          <Receipt size={15} style={{ color: dark ? "#e3c47d" : "#000a18" }} />
           <h2 className="font-semibold text-sm" style={{ color: textColor }}>
             Comptabilité
           </h2>
@@ -696,9 +722,6 @@ function SectionCompta({ dark }: { dark: boolean }) {
             style={{ borderBottom: `1px solid ${borderColor}` }}
           >
             <div>
-              <p className="font-bold text-base" style={{ color: accentColor }}>
-                {anneeSelectionnee}
-              </p>
               <div className="flex items-baseline gap-2 mt-0.5">
                 <span
                   className="text-sm font-semibold"
@@ -818,40 +841,6 @@ function SectionCompta({ dark }: { dark: boolean }) {
                 </div>
               );
             })
-          )}
-
-          {/* Footer total */}
-          {depenses.length > 0 && (
-            <div
-              className="px-4 py-2.5 grid"
-              style={{
-                gridTemplateColumns: "1fr 1.5fr 80px 80px 36px",
-                borderTop: `1px solid ${borderColor}`,
-                background: dark
-                  ? "rgba(227,196,125,0.05)"
-                  : "rgba(227,196,125,0.08)",
-              }}
-            >
-              <span
-                className="col-span-2 text-[10px] font-semibold uppercase tracking-wide"
-                style={{ color: mutedColor }}
-              >
-                Total
-              </span>
-              <span
-                className="text-xs font-bold text-right"
-                style={{ color: accentColor }}
-              >
-                {total.toFixed(2)} €
-              </span>
-              <span
-                className="text-xs font-bold text-right"
-                style={{ color: accentColor }}
-              >
-                {parTrois.toFixed(2)} €
-              </span>
-              <span />
-            </div>
           )}
         </div>
       )}
