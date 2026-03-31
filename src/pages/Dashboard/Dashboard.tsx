@@ -2,7 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "@/config/firebase";
-import { MapPin, BarChart2, Percent, Grape,  } from "lucide-react";
+import { getAuth, signOut } from "firebase/auth";
+import { MapPin, BarChart2, Percent, Grape, LogOut } from "lucide-react";
 import {
   PieChart,
   Pie,
@@ -46,7 +47,6 @@ const glassCard = {
   backdropFilter: "blur(16px)",
   WebkitBackdropFilter: "blur(16px)",
   border: "1px solid rgba(255,255,255,0.3)",
-  
 };
 
 export default function Dashboard() {
@@ -96,6 +96,14 @@ export default function Dashboard() {
     );
   };
 
+const handleLogout = async () => {
+  if (!confirm("Se déconnecter ?")) return;
+
+  const auth = getAuth();
+  await signOut(auth);
+  navigate("/Login/Login");
+};
+
   const stats = [
     {
       label: "Parcelles",
@@ -135,85 +143,97 @@ export default function Dashboard() {
     },
   ];
 
-return (
-  <div className="h-[calc(100vh-90px)] overflow-hidden p-3 flex flex-col gap-3">
-    <div className="pt-1">
-      <h1 className="text-xl font-bold text-foreground">Dashboard</h1>
-      {/* <p className="text-muted-foreground text-sm">Détails de l'exploitation</p> */}
-    </div>
+  return (
+    <div className="h-[calc(100vh-90px)] overflow-hidden p-3 flex flex-col gap-3">
+      <div className="pt-1 flex items-center justify-between">
+        <h1 className="text-xl font-bold text-foreground">Dashboard</h1>
 
-    <div className="grid grid-cols-2 gap-2">
-      {stats.map(({ label, value, icon: Icon, color, bg, border, route }) => (
-        <div
-          key={label}
-          onClick={() => route && navigate(route)}
-          className={`rounded-2xl p-3 border ${border} cursor-pointer hover:scale-[1.02] transition`}
-          style={glassCard}
+        <button
+          onClick={handleLogout}
+          className="w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200 opacity-50 hover:opacity-100 hover:-translate-y-[1px]"
+          style={{
+            background: "rgba(255,255,255,0.08)",
+            border: "1px solid rgba(255,255,255,0.15)",
+          }}
         >
+          <LogOut size={16} />
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        {stats.map(({ label, value, icon: Icon, color, bg, border, route }) => (
           <div
-            className={`w-8 h-8 rounded-xl ${bg} flex items-center justify-center mb-3`}
+            key={label}
+            onClick={() => route && navigate(route)}
+            className={`rounded-2xl p-3 border ${border} cursor-pointer hover:scale-[1.02] transition`}
+            style={glassCard}
           >
-            <Icon size={18} className={color} />
-          </div>
-          <p className="text-xl font-bold text-foreground">{value}</p>
-          <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
-        </div>
-      ))}
-    </div>
-
-    <div
-      className="flex-1 min-h-0 rounded-2xl p-3 border border-white/10"
-      style={glassCard}
-    >
-      <h2 className="text-sm font-semibold text-foreground mb-1">
-        Répartition des cépages
-      </h2>
-      <p className="text-xs text-muted-foreground mb-4">Par surface en ares</p>
-
-      {cepageData.length > 0 ? (
-        <ResponsiveContainer width="100%" height={160}>
-          <PieChart>
-            <Pie
-              data={cepageData}
-              cx="50%"
-              cy="50%"
-              innerRadius={45}
-              outerRadius={65}
-              paddingAngle={4}
-              dataKey="value"
+            <div
+              className={`w-8 h-8 rounded-xl ${bg} flex items-center justify-center mb-3`}
             >
-              {cepageData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={getCepageColor(entry.name, index)}
-                />
-              ))}
-            </Pie>
-            <Tooltip
-              contentStyle={{
-                background: "rgba(15,15,25,0.9)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: "12px",
-                color: "#fff",
-                fontSize: "12px",
-              }}
-              formatter={(value) => [`${value} ares`, ""]}
-            />
-            <Legend
-              iconType="circle"
-              iconSize={8}
-              wrapperStyle={{ fontSize: "11px", color: "#9ca3af" }}
-            />
-          </PieChart>
-        </ResponsiveContainer>
-      ) : (
-        <div className="h-[140px] flex items-center justify-center">
-          <p className="text-muted-foreground text-sm">
-            Aucune parcelle enregistrée
-          </p>
-        </div>
-      )}
+              <Icon size={18} className={color} />
+            </div>
+            <p className="text-xl font-bold text-foreground">{value}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
+          </div>
+        ))}
+      </div>
+
+      <div
+        className="flex-1 min-h-0 rounded-2xl p-3 border border-white/10"
+        style={glassCard}
+      >
+        <h2 className="text-sm font-semibold text-foreground mb-1">
+          Répartition des cépages
+        </h2>
+        <p className="text-xs text-muted-foreground mb-4">
+          Par surface en ares
+        </p>
+
+        {cepageData.length > 0 ? (
+          <ResponsiveContainer width="100%" height={160}>
+            <PieChart>
+              <Pie
+                data={cepageData}
+                cx="50%"
+                cy="50%"
+                innerRadius={45}
+                outerRadius={65}
+                paddingAngle={4}
+                dataKey="value"
+              >
+                {cepageData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={getCepageColor(entry.name, index)}
+                  />
+                ))}
+              </Pie>
+              <Tooltip
+                contentStyle={{
+                  background: "rgba(15,15,25,0.9)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: "12px",
+                  color: "#fff",
+                  fontSize: "12px",
+                }}
+                formatter={(value) => [`${value} ares`, ""]}
+              />
+              <Legend
+                iconType="circle"
+                iconSize={8}
+                wrapperStyle={{ fontSize: "11px", color: "#9ca3af" }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        ) : (
+          <div className="h-[140px] flex items-center justify-center">
+            <p className="text-muted-foreground text-sm">
+              Aucune parcelle enregistrée
+            </p>
+          </div>
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
 }

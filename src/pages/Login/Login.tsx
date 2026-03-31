@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Grape } from "lucide-react";
+import logo from "@/assets/logo03.svg";
+import BackgroundGradient from "@/components/shared/BackgroundGradient";
 
 export default function Login() {
   const { loginWithEmail, loginWithGoogle } = useAuth();
@@ -39,19 +40,31 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen relative flex items-center justify-center p-4">
+      <BackgroundGradient />
+
       <div
-        className="w-full max-w-md rounded-2xl p-8 border border-white/10"
+        className="relative z-10 w-full max-w-md rounded-2xl p-8 border border-white/10"
         style={{
-          background: "rgba(15, 15, 25, 0.7)",
+          background: "rgba(15, 15, 25, 0.1)",
           backdropFilter: "blur(24px)",
           WebkitBackdropFilter: "blur(24px)",
         }}
       >
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="bg-violet-600/20 border border-violet-500/30 rounded-2xl p-4 mb-4">
-            <Grape size={36} className="text-violet-400" />
+          <div
+            className="rounded-2xl p-4 mb-4 flex items-center justify-center"
+            style={{
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.1)",
+            }}
+          >
+            <img
+              src={logo}
+              alt="VigneApp logo"
+              className="w-10 h-10 object-contain opacity-90"
+            />
           </div>
           <h1 className="text-2xl font-bold text-foreground">VigneApp</h1>
           <p className="text-muted-foreground text-sm mt-1">
