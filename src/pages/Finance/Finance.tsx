@@ -784,7 +784,7 @@ function SectionCompta({ dark }: { dark: boolean }) {
               return (
                 <div
                   key={d.id}
-                  className="grid items-center px-4 py-2.5 group"
+                  className="grid items-center px-1 py-2.5 group"
                   style={{
                     gridTemplateColumns: "1fr 1.5fr 80px 80px 36px",
                     borderBottom: isLast ? "none" : `1px solid ${borderColor}`,
@@ -814,7 +814,7 @@ function SectionCompta({ dark }: { dark: boolean }) {
                   >
                     {((d.prix || 0) / 3).toFixed(2)} €
                   </span>
-                  <div className="flex items-center justify-end gap-0.5">
+                  <div className="flex items-center justify-end gap-0.2">
                     {d.factureUrl && (
                       <a
                         href={d.factureUrl}
@@ -833,7 +833,7 @@ function SectionCompta({ dark }: { dark: boolean }) {
                     <button
                       onClick={() => handleDeleteDepense(d.id)}
                       className="w-6 h-6 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                      style={{ color: "#ef4444" }}
+                      style={{ color: "#faf5a0" }}
                     >
                       <Trash2 size={11} />
                     </button>

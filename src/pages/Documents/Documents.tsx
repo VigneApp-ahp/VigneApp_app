@@ -69,14 +69,14 @@ interface Document {
 // ─── Palette de couleurs pour les catégories ──────────────────────────────────
 
 const CATEGORY_COLORS = [
-  "#418c55",
-  "#3f788c",
-  "#06b6d4",
-  "#BA68C8",
-  "#ef4444",
-  "#f59e0b",
-  "#ec4899",
-  "#10b981",
+  "#2E5BFF", // Bleu vif
+  "#FF6B35", // Orange chaud
+  "#2FBF71", // Vert équilibré
+  "#D7263D", // Rouge profond
+  "#6A4C93", // Violet
+  "#008C8C", // Turquoise foncé
+  "#F4A261", // Orange doux
+  "#3A86FF", // Bleu lumineux
 ];
 
 // ─── Utilitaires ──────────────────────────────────────────────────────────────
